@@ -1,4 +1,4 @@
-module github.com/generator
+module github.com/valentedev/generator
 
 go 1.17
 
