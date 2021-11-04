@@ -6,6 +6,18 @@ import (
 	"strconv"
 )
 
+type MailboxIn struct {
+	Seller   string `json:"seller"`
+	Customer string `json:"customer"`
+	Products string `json:"product"`
+}
+
+type MailboxOut struct {
+	Seller   []string   `json:"seller,omitempty"`
+	Customer []Customer `json:"customer,omitempty"`
+	Product  []Product  `json:"product,omitempty"`
+}
+
 func (app *application) generateHandler(w http.ResponseWriter, r *http.Request) {
 	var mbIn MailboxIn
 	var mbOut MailboxOut

@@ -10,18 +10,6 @@ import (
 	"time"
 )
 
-type MailboxIn struct {
-	Seller   string `json:"seller"`
-	Customer string `json:"customer"`
-	Products string `json:"product"`
-}
-
-type MailboxOut struct {
-	Seller   []string   `json:"seller,omitempty"`
-	Customer []Customer `json:"customer,omitempty"`
-	Product  []Product  `json:"product,omitempty"`
-}
-
 func readCsvFile(filePath string) map[int]string {
 	mapa := make(map[int]string)
 	f, err := os.Open(filePath)
@@ -131,9 +119,16 @@ type Customer struct {
 	State   string `json:"state,omitempty"`
 }
 
+type Places struct {
+	State string
+	City  string
+}
+
 func genCustomerList(n int) []Customer {
 
 	var customer []Customer
+	var placesList []Places
+
 	fileAdjectives := readCsvFile("./data/adjectives.csv")
 	filePlanets := readCsvFile("./data/planets.csv")
 
@@ -144,18 +139,30 @@ func genCustomerList(n int) []Customer {
 		4: "Bros.",
 	}
 
+	f, _ := os.Open("./data/stateCities.csv")
+	defer f.Close()
+	var arquivo = csv.NewReader(f)
+	r, _ := arquivo.ReadAll()
+
+	for _, j := range r {
+		p := Places{State: j[0], City: j[1]}
+		placesList = append(placesList, p)
+	}
+
 	a := 0
 	b := len(fileAdjectives)
 	x := 0
 	y := len(filePlanets)
+	s := 0
+	t := len(placesList)
 
 	for i := 0; i < n; i++ {
 		num1 := genRandNum(a, b)
 		num2 := genRandNum(x, y)
 		num3 := genRandNum(1, 5)
-		c := Customer{Name: strings.Title(fileAdjectives[num1]) + " " + filePlanets[num2] + " " + companyType[num3]}
+		num4 := genRandNum(s, t)
+		c := Customer{Name: strings.Title(fileAdjectives[num1]) + " " + filePlanets[num2] + " " + companyType[num3], City: placesList[num4].City, State: placesList[num4].State}
 		customer = append(customer, c)
 	}
 	return customer
-
 }
