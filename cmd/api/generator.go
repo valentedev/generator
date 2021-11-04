@@ -17,9 +17,9 @@ type MailboxIn struct {
 }
 
 type MailboxOut struct {
-	Seller   []string  `json:"seller,omitempty"`
-	Customer []string  `json:"customer,omitempty"`
-	Product  []Product `json:"product,omitempty"`
+	Seller   []string   `json:"seller,omitempty"`
+	Customer []Customer `json:"customer,omitempty"`
+	Product  []Product  `json:"product,omitempty"`
 }
 
 func readCsvFile(filePath string) map[int]string {
@@ -125,58 +125,15 @@ func genProductList(n int) []Product {
 }
 
 type Customer struct {
-	Name    string `json:"name"`
-	Address string `json:"address"`
-	City    string `json:"city"`
-	State   string `json:"state"`
+	Name    string `json:"name,omitempty"`
+	Address string `json:"address,omitempty"`
+	City    string `json:"city,omitempty"`
+	State   string `json:"state,omitempty"`
 }
 
-// type CustomerNameCSV struct {
-// 	Adjective  string
-// 	Planet string
-// 	Type string
-// }
+func genCustomerList(n int) []Customer {
 
-func genCustomerList(n int) []string {
-	// var customer []Customer
-	// var csvCustomerNameList []CustomerNameCSV
-
-	// CompanyType := map[int]string{
-	// 	1: "LLC.",
-	// 	2: "Incorporated",
-	// 	3: "Corporation",
-	// 	4: "Bros.",
-	// }
-
-	// fileAdjectives, _ := os.Open("./data/adjectives.csv")
-	// defer fileAdjectives.Close()
-	// var fileA = csv.NewReader(fileAdjectives)
-	// adjectives, _ := fileA.ReadAll()
-
-	// filePlanets, _ := os.Open("./data/planets.csv")
-	// defer filePlanets.Close()
-	// var fileB = csv.NewReader(filePlanets)
-	// planets, _ := fileB.ReadAll()
-
-	// for _, j := range adjectives {
-	// 	name := CustomerNameCSV{Adjective: j[0]}
-	// 	csvCustomerNameList = append(csvCustomerNameList, name)
-	// }
-
-	// for _, k := range planets {
-	// 	name2 := CustomerNameCSV{Planet: k[0]}
-	// 	csvCustomerNameList = append(csvCustomerNameList, name2)
-	// }
-
-	// a := 0
-	// b := len(name1)
-
-	// for i := 0; i < n; i++ {
-	// 	numName := genRandNum(a, b)
-
-	// }
-
-	var list []string
+	var customer []Customer
 	fileAdjectives := readCsvFile("./data/adjectives.csv")
 	filePlanets := readCsvFile("./data/planets.csv")
 
@@ -196,8 +153,9 @@ func genCustomerList(n int) []string {
 		num1 := genRandNum(a, b)
 		num2 := genRandNum(x, y)
 		num3 := genRandNum(1, 5)
-		list = append(list, strings.Title(fileAdjectives[num1])+" "+filePlanets[num2]+" "+companyType[num3])
+		c := Customer{Name: strings.Title(fileAdjectives[num1]) + " " + filePlanets[num2] + " " + companyType[num3]}
+		customer = append(customer, c)
 	}
-	return list
+	return customer
 
 }
