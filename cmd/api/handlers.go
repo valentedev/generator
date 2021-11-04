@@ -22,7 +22,10 @@ func (app *application) generateHandler(w http.ResponseWriter, r *http.Request) 
 	ProdList := genProductList(strToNum)
 	mbOut.Product = ProdList
 
-	// customer := mbIn.Customer
+	customer := mbIn.Customer
+	strToNum, _ = strconv.Atoi(customer)
+	CustList := genCustomerList(strToNum)
+	mbOut.Customer = CustList
 
 	jsonList, _ := json.Marshal(mbOut)
 

@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -109,11 +110,11 @@ func genProductList(n int) []Product {
 		numProd := genRandNum(a, b)
 		rp := csvlist[numProd]
 		if rp.Phase == "solid" {
-			numPackage := genRandNum(1, 3)
+			numPackage := genRandNum(1, 4)
 			prod := Product{Number: strconv.Itoa(prodCode), Name: rp.Name, Description: PackageType[numPackage]}
 			list = append(list, prod)
 		} else {
-			numPackage := genRandNum(4, 7)
+			numPackage := genRandNum(5, 8)
 			prod := Product{Number: strconv.Itoa(prodCode), Name: rp.Name, Description: PackageType[numPackage]}
 			list = append(list, prod)
 		}
@@ -121,4 +122,82 @@ func genProductList(n int) []Product {
 	}
 
 	return list
+}
+
+type Customer struct {
+	Name    string `json:"name"`
+	Address string `json:"address"`
+	City    string `json:"city"`
+	State   string `json:"state"`
+}
+
+// type CustomerNameCSV struct {
+// 	Adjective  string
+// 	Planet string
+// 	Type string
+// }
+
+func genCustomerList(n int) []string {
+	// var customer []Customer
+	// var csvCustomerNameList []CustomerNameCSV
+
+	// CompanyType := map[int]string{
+	// 	1: "LLC.",
+	// 	2: "Incorporated",
+	// 	3: "Corporation",
+	// 	4: "Bros.",
+	// }
+
+	// fileAdjectives, _ := os.Open("./data/adjectives.csv")
+	// defer fileAdjectives.Close()
+	// var fileA = csv.NewReader(fileAdjectives)
+	// adjectives, _ := fileA.ReadAll()
+
+	// filePlanets, _ := os.Open("./data/planets.csv")
+	// defer filePlanets.Close()
+	// var fileB = csv.NewReader(filePlanets)
+	// planets, _ := fileB.ReadAll()
+
+	// for _, j := range adjectives {
+	// 	name := CustomerNameCSV{Adjective: j[0]}
+	// 	csvCustomerNameList = append(csvCustomerNameList, name)
+	// }
+
+	// for _, k := range planets {
+	// 	name2 := CustomerNameCSV{Planet: k[0]}
+	// 	csvCustomerNameList = append(csvCustomerNameList, name2)
+	// }
+
+	// a := 0
+	// b := len(name1)
+
+	// for i := 0; i < n; i++ {
+	// 	numName := genRandNum(a, b)
+
+	// }
+
+	var list []string
+	fileAdjectives := readCsvFile("./data/adjectives.csv")
+	filePlanets := readCsvFile("./data/planets.csv")
+
+	companyType := map[int]string{
+		1: "LLC.",
+		2: "Incorporated",
+		3: "Corporation",
+		4: "Bros.",
+	}
+
+	a := 0
+	b := len(fileAdjectives)
+	x := 0
+	y := len(filePlanets)
+
+	for i := 0; i < n; i++ {
+		num1 := genRandNum(a, b)
+		num2 := genRandNum(x, y)
+		num3 := genRandNum(1, 5)
+		list = append(list, strings.Title(fileAdjectives[num1])+" "+filePlanets[num2]+" "+companyType[num3])
+	}
+	return list
+
 }
