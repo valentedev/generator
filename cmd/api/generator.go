@@ -131,12 +131,26 @@ func genCustomerList(n int) []Customer {
 
 	fileAdjectives := readCsvFile("./data/adjectives.csv")
 	filePlanets := readCsvFile("./data/planets.csv")
+	fileStreets := readCsvFile("./data/streetNames.csv")
 
 	companyType := map[int]string{
 		1: "LLC.",
 		2: "Incorporated",
 		3: "Corporation",
 		4: "Bros.",
+	}
+
+	roadType := map[int]string{
+		1:  "Rd.",
+		2:  "St.",
+		3:  "Ave.",
+		4:  "Blvd",
+		5:  "Ln.",
+		6:  "Dr.",
+		7:  "Way",
+		8:  "Hwy.",
+		9:  "Fwy.",
+		10: "Pkwy.",
 	}
 
 	f, _ := os.Open("./data/stateCities.csv")
@@ -149,19 +163,25 @@ func genCustomerList(n int) []Customer {
 		placesList = append(placesList, p)
 	}
 
-	a := 0
-	b := len(fileAdjectives)
-	x := 0
-	y := len(filePlanets)
-	s := 0
-	t := len(placesList)
+	adjLen := len(fileAdjectives)
+	planetLen := len(filePlanets)
+	placesLen := len(placesList)
+	streetsLen := len(fileStreets)
 
 	for i := 0; i < n; i++ {
-		num1 := genRandNum(a, b)
-		num2 := genRandNum(x, y)
+		num1 := genRandNum(0, adjLen)
+		num2 := genRandNum(0, planetLen)
+		//CompanyType
 		num3 := genRandNum(1, 5)
-		num4 := genRandNum(s, t)
-		c := Customer{Name: strings.Title(fileAdjectives[num1]) + " " + filePlanets[num2] + " " + companyType[num3], City: placesList[num4].City, State: placesList[num4].State}
+		num4 := genRandNum(0, placesLen)
+		num5 := genRandNum(0, streetsLen)
+		//AddressNumber
+		num6 := genRandNum(66, 787)
+		//RoadType
+		num7 := genRandNum(1, 11)
+
+		c := Customer{Name: strings.Title(fileAdjectives[num1]) + " " + filePlanets[num2] + " " + companyType[num3], Address: strconv.Itoa(num6) + " " + fileStreets[num5] + " " + roadType[num7], City: placesList[num4].City, State: placesList[num4].State}
+
 		customer = append(customer, c)
 	}
 	return customer
