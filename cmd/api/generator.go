@@ -4,7 +4,6 @@ import (
 	"embed"
 	"encoding/csv"
 	"fmt"
-	_ "io/fs"
 	"math/rand"
 	"strconv"
 	"strings"
