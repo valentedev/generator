@@ -1,8 +1,10 @@
 package main
 
 import (
+	"embed"
 	"encoding/csv"
-	"log"
+	"fmt"
+	_ "io/fs"
 	"math/rand"
 	"os"
 	"strconv"
@@ -10,11 +12,36 @@ import (
 	"time"
 )
 
-func readCsvFile(filePath string) map[int]string {
+//go:embed data
+var csvdata embed.FS
+
+// func readCsvFile(filePath string) map[int]string {
+// 	mapa := make(map[int]string)
+// 	f, err := os.Open(filePath)
+// 	if err != nil {
+// 		log.Fatal("Unable to read input file "+filePath, err)
+// 	}
+// 	defer f.Close()
+
+// 	csvReader := csv.NewReader(f)
+// 	records, err := csvReader.ReadAll()
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	for i, j := range records {
+// 		for _, m := range j {
+// 			mapa[i] = m
+// 		}
+// 	}
+// 	return mapa
+// }
+
+func readCsvFileEmbed(filePath string) map[int]string {
 	mapa := make(map[int]string)
-	f, err := os.Open(filePath)
+	f, err := csvdata.Open(filePath)
 	if err != nil {
-		log.Fatal("Unable to read input file "+filePath, err)
+		fmt.Printf("error inside readCsvFileEmbed %s\n", err)
 	}
 	defer f.Close()
 
@@ -37,21 +64,28 @@ func genRandNum(min, max int) int {
 	return rand.Intn(max-min) + min
 }
 
-func genFullNamesList(n int) []string {
-	var list []string
-	fileNames := readCsvFile("./data/Names.csv")
-	fileLastNames := readCsvFile("./data/LastNames.csv")
-	a := 0
+type People struct {
+	Name     string
+	LastName string
+}
+
+func genFullNamesList(n int) []People {
+	var names []People
+
+	fileNames := readCsvFileEmbed("data/Names.csv")
+	fileLastNames := readCsvFileEmbed("data/LastNames.csv")
+
 	b := len(fileNames)
-	x := 0
 	y := len(fileLastNames)
 
 	for i := 0; i < n; i++ {
-		num1 := genRandNum(a, b)
-		num2 := genRandNum(x, y)
-		list = append(list, fileNames[num1-1]+" "+fileLastNames[num2-1])
+		num1 := genRandNum(0, b)
+		num2 := genRandNum(0, y)
+		//list = append(list, string(fileNames[num1-1])+" "+string(fileLastNames[num2-1]))
+		nam := People{Name: string(fileNames[num1-1]), LastName: string(fileLastNames[num2-1])}
+		names = append(names, nam)
 	}
-	return list
+	return names
 }
 
 type Product struct {
@@ -129,9 +163,9 @@ func genCustomerList(n int) []Customer {
 	var customer []Customer
 	var placesList []Places
 
-	fileAdjectives := readCsvFile("./data/adjectives.csv")
-	filePlanets := readCsvFile("./data/planets.csv")
-	fileStreets := readCsvFile("./data/streetNames.csv")
+	fileAdjectives := readCsvFileEmbed("data/adjectives.csv")
+	filePlanets := readCsvFileEmbed("data/planets.csv")
+	fileStreets := readCsvFileEmbed("data/streetNames.csv")
 
 	companyType := map[int]string{
 		1: "LLC.",

@@ -13,7 +13,7 @@ type MailboxIn struct {
 }
 
 type MailboxOut struct {
-	Seller   []string   `json:"seller,omitempty"`
+	Seller   []People   `json:"seller,omitempty"`
 	Customer []Customer `json:"customer,omitempty"`
 	Product  []Product  `json:"product,omitempty"`
 }
