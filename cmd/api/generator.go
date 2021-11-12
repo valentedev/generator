@@ -6,7 +6,6 @@ import (
 	"fmt"
 	_ "io/fs"
 	"math/rand"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -15,30 +14,7 @@ import (
 //go:embed data
 var csvdata embed.FS
 
-// func readCsvFile(filePath string) map[int]string {
-// 	mapa := make(map[int]string)
-// 	f, err := os.Open(filePath)
-// 	if err != nil {
-// 		log.Fatal("Unable to read input file "+filePath, err)
-// 	}
-// 	defer f.Close()
-
-// 	csvReader := csv.NewReader(f)
-// 	records, err := csvReader.ReadAll()
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	for i, j := range records {
-// 		for _, m := range j {
-// 			mapa[i] = m
-// 		}
-// 	}
-// 	return mapa
-// }
-
-func readCsvFileEmbed(filePath string) map[int]string {
-	mapa := make(map[int]string)
+func readCsvFileEmbed(filePath string) [][]string {
 	f, err := csvdata.Open(filePath)
 	if err != nil {
 		fmt.Printf("error inside readCsvFileEmbed %s\n", err)
@@ -51,12 +27,7 @@ func readCsvFileEmbed(filePath string) map[int]string {
 		panic(err)
 	}
 
-	for i, j := range records {
-		for _, m := range j {
-			mapa[i] = m
-		}
-	}
-	return mapa
+	return records
 }
 
 func genRandNum(min, max int) int {
@@ -70,10 +41,19 @@ type People struct {
 }
 
 func genFullNamesList(n int) []People {
-	var names []People
+	var people []People
 
+	names := make(map[int]string)
 	fileNames := readCsvFileEmbed("data/Names.csv")
+	for i, j := range fileNames {
+		names[i] = j[0]
+	}
+
+	lastNames := make(map[int]string)
 	fileLastNames := readCsvFileEmbed("data/LastNames.csv")
+	for i, j := range fileLastNames {
+		lastNames[i] = j[0]
+	}
 
 	b := len(fileNames)
 	y := len(fileLastNames)
@@ -81,11 +61,11 @@ func genFullNamesList(n int) []People {
 	for i := 0; i < n; i++ {
 		num1 := genRandNum(0, b)
 		num2 := genRandNum(0, y)
-		//list = append(list, string(fileNames[num1-1])+" "+string(fileLastNames[num2-1]))
-		nam := People{Name: string(fileNames[num1-1]), LastName: string(fileLastNames[num2-1])}
-		names = append(names, nam)
+		nam := People{Name: string(names[num1-1]), LastName: string(lastNames[num2-1])}
+		people = append(people, nam)
 	}
-	return names
+
+	return people
 }
 
 type Product struct {
@@ -115,12 +95,9 @@ func genProductList(n int) []Product {
 		7: "Metal IBC 1000 liters",
 	}
 
-	f, _ := os.Open("./data/Products.csv")
-	defer f.Close()
-	var arquivo = csv.NewReader(f)
-	r, _ := arquivo.ReadAll()
+	fileProducts := readCsvFileEmbed("data/Products.csv")
 
-	for _, j := range r {
+	for _, j := range fileProducts {
 		p := ProductCSV{Name: j[0], Phase: j[1]}
 		csvlist = append(csvlist, p)
 	}
@@ -161,11 +138,31 @@ type Places struct {
 func genCustomerList(n int) []Customer {
 
 	var customer []Customer
-	var placesList []Places
 
+	adj := make(map[int]string)
 	fileAdjectives := readCsvFileEmbed("data/adjectives.csv")
+	for i, j := range fileAdjectives {
+		adj[i] = j[0]
+	}
+
+	plan := make(map[int]string)
 	filePlanets := readCsvFileEmbed("data/planets.csv")
+	for i, j := range filePlanets {
+		plan[i] = j[0]
+	}
+
+	strn := make(map[int]string)
 	fileStreets := readCsvFileEmbed("data/streetNames.csv")
+	for i, j := range fileStreets {
+		strn[i] = j[0]
+	}
+
+	fileStateCity := readCsvFileEmbed("data/stateCities.csv")
+	var placesList []Places
+	for _, j := range fileStateCity {
+		scm := Places{State: j[0], City: j[1]}
+		placesList = append(placesList, scm)
+	}
 
 	companyType := map[int]string{
 		1: "LLC.",
@@ -187,20 +184,10 @@ func genCustomerList(n int) []Customer {
 		10: "Pkwy.",
 	}
 
-	f, _ := os.Open("./data/stateCities.csv")
-	defer f.Close()
-	var arquivo = csv.NewReader(f)
-	r, _ := arquivo.ReadAll()
-
-	for _, j := range r {
-		p := Places{State: j[0], City: j[1]}
-		placesList = append(placesList, p)
-	}
-
-	adjLen := len(fileAdjectives)
-	planetLen := len(filePlanets)
+	adjLen := len(adj)
+	planetLen := len(plan)
 	placesLen := len(placesList)
-	streetsLen := len(fileStreets)
+	streetsLen := len(strn)
 
 	for i := 0; i < n; i++ {
 		num1 := genRandNum(0, adjLen)
@@ -214,7 +201,7 @@ func genCustomerList(n int) []Customer {
 		//RoadType
 		num7 := genRandNum(1, 11)
 
-		c := Customer{Name: strings.Title(fileAdjectives[num1]) + " " + filePlanets[num2] + " " + companyType[num3], Address: strconv.Itoa(num6) + " " + fileStreets[num5] + " " + roadType[num7], City: placesList[num4].City, State: placesList[num4].State}
+		c := Customer{Name: strings.Title(adj[num1]) + " " + plan[num2] + " " + companyType[num3], Address: strconv.Itoa(num6) + " " + strn[num5] + " " + roadType[num7], City: placesList[num4].City, State: placesList[num4].State}
 
 		customer = append(customer, c)
 	}
