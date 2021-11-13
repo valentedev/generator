@@ -12,3 +12,7 @@ production_host_ip = '159.223.164.65'
 .PHONY: production/connect
 production/connect:
 	ssh rodrigovalente@${production_host_ip}
+
+.PHONY: production/deploy/api
+production/deploy/api:
+	rsync -rP --delete ./bin/linux_amd64/api rodrigovalente@${production_host_ip}:~	
