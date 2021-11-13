@@ -55,5 +55,7 @@ Temporary Items
 #Custom
 /bin
 .env
+/remote
+Makefile
 
 # End of https://www.toptal.com/developers/gitignore/api/osx,go
