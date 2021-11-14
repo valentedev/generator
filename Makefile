@@ -16,3 +16,12 @@ production/connect:
 .PHONY: production/deploy/api
 production/deploy/api:
 	rsync -rP --delete ./bin/linux_amd64/api rodrigovalente@${production_host_ip}:~	
+
+.PHONY: production/configure/api.service
+production/configure/api.service:
+	rsync -rP --delete ./remote/production/api.service rodrigovalente@${production_host_ip}:~
+	ssh -t rodrigovalente@${production_host_ip} '\
+	sudo mv ~/api.service /etc/systemd/system/ \
+	&& sudo systemctl enable api \
+	&& sudo systemctl restart api \
+	'
