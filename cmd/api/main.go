@@ -42,7 +42,7 @@ func (app *application) routes() http.Handler {
 
 	router := httprouter.New()
 
-	router.HandlerFunc(http.MethodPost, "/", app.generateHandler)
+	router.HandlerFunc(http.MethodGet, "/", app.generateHandler)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://127.0.0.1:5500"},
