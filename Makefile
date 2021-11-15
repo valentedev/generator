@@ -25,3 +25,6 @@ production/configure/api.service:
 	&& sudo systemctl enable api \
 	&& sudo systemctl restart api \
 	'
+
+# doctl compute droplet-action power-off generate-be
+# doctl compute droplet list
