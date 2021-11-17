@@ -45,7 +45,7 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodPost, "/", app.generateHandler)
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://127.0.0.1:5500"},
+		AllowedOrigins:   []string{"http://127.0.0.1:5500", "http://127.0.0.1", "https://localhost"},
 		AllowCredentials: true,
 		// Enable Debugging for testing, consider disabling in production
 		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodPut, http.MethodOptions},

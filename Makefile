@@ -11,7 +11,7 @@ production_host_ip = '159.223.164.65'
 
 .PHONY: production/connect
 production/connect:
-	ssh rodrigovalente@${production_host_ip}
+	ssh -i ~/.ssh/docean rodrigovalente@${production_host_ip}
 
 .PHONY: production/deploy/api
 production/deploy/api:
